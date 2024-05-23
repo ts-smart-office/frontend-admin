@@ -1,5 +1,6 @@
 import CalendarDashboard from '@/components/dashboard/CalendarDashboard'
 import FeedbackCard from '@/components/dashboard/FeedbackCard'
+import FoodCard from '@/components/dashboard/FoodCard'
 import OverviewCard from '@/components/dashboard/OverviewCard'
 import RecentPostCard from '@/components/dashboard/RecentPostCard'
 import ReservationCard from '@/components/dashboard/ReservationCard'
@@ -18,7 +19,7 @@ export default function Home() {
 			</div>
 			<div className='grid grid-cols-10 gap-6'>
 				<div className='col-span-7'>
-					<RecentPostCard />
+					<FoodCard />
 				</div>
 				<div className='col-span-3'>
 					<CalendarDashboard />
