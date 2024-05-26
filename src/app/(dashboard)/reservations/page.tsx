@@ -8,8 +8,15 @@ import {
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import TableReservations from '@/components/reservations/TableReservations'
+import { getAdminSession } from '@/lib/actions'
+import { redirect } from 'next/navigation'
 
-const Reservations: FC = () => {
+const Reservations: FC = async () => {
+	const sessionAdmin = await getAdminSession()
+	if (!sessionAdmin) {
+		return redirect('/signin')
+	}
+
 	return (
 		<div className='px-4 font-urbanist flex flex-col gap-6'>
 			<Breadcrumb>

@@ -14,15 +14,44 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '../ui/button'
 import { signinSchema } from '@/utils/form-schema'
-import Link from 'next/link'
+import { apiCsrfToken, apiLoginAdmin } from '@/api/authApi'
+import { handleAdminSession } from '@/lib/actions'
+import { useRouter } from 'next/navigation'
+import { useToast } from '../ui/use-toast'
 
 const FormSignin: FC = () => {
+	const router = useRouter()
+	const { toast } = useToast()
 	const form = useForm<z.infer<typeof signinSchema>>({
 		resolver: zodResolver(signinSchema),
 	})
 
-	const onSubmit = (values: z.infer<typeof signinSchema>) => {
-		console.log(values)
+	const onSubmit = async (values: z.infer<typeof signinSchema>) => {
+		await apiCsrfToken().catch(error => {
+			if (error.response) {
+				toast({
+					description: error.response.data.message,
+				})
+			}
+		})
+		await apiLoginAdmin(values)
+			.then(res => {
+				const { id, name, email } = res.data.user
+				handleAdminSession({ id, name, email })
+				toast({
+					description: res.data.message,
+				})
+				setTimeout(function () {
+					router.push('/')
+				}, 1000)
+			})
+			.catch(error => {
+				if (error.response) {
+					toast({
+						description: error.response.data.message,
+					})
+				}
+			})
 	}
 
 	return (
@@ -65,12 +94,6 @@ const FormSignin: FC = () => {
 						</FormItem>
 					)}
 				/>
-				<div className='lg:text-lg'>
-					Don’t have an account?
-					<span className='font-medium text-greenBrand'>
-						<Link href='/signup'>Sign up</Link>
-					</span>
-				</div>
 				<div className='flex justify-center pt-4'>
 					<Button
 						type='submit'
