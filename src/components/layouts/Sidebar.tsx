@@ -2,6 +2,7 @@ import { FC } from 'react'
 import SidebarMenu from './SidebarMenu'
 import {
 	BuildingOfficeIcon,
+	CakeIcon,
 	ClipboardDocumentIcon,
 	NewspaperIcon,
 	RectangleGroupIcon,
@@ -24,6 +25,11 @@ const Sidebar: FC = () => {
 			text: 'Rooms',
 			link: '/rooms',
 			icon: <BuildingOfficeIcon className='w-6 h-6' />,
+		},
+		{
+			text: 'Foods',
+			link: '/foods',
+			icon: <CakeIcon className='w-6 h-6' />,
 		},
 		{
 			text: 'Posts',

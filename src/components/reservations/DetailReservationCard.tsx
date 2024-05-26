@@ -1,6 +1,5 @@
 import { FC } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
-import { Button } from '../ui/button'
 import {
 	CalendarIcon,
 	DocumentTextIcon,
@@ -8,6 +7,7 @@ import {
 	UserGroupIcon,
 	UserIcon,
 } from '@heroicons/react/24/outline'
+import FormUpdateReservation from './FormUpdateReservation'
 
 const DetailReservationCard: FC = () => {
 	return (
@@ -15,10 +15,8 @@ const DetailReservationCard: FC = () => {
 			<CardHeader>
 				<CardTitle className='flex justify-between'>
 					<p>Meeting Room #ID</p>
-					<div className='flex gap-4'>
-						<Button>Select</Button>
-						<Button>Update status</Button>
-					</div>
+					{/* <div className='flex gap-4'></div> */}
+					<FormUpdateReservation />
 				</CardTitle>
 			</CardHeader>
 			<CardContent className='flex flex-col gap-8'>

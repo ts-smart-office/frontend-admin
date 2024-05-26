@@ -14,7 +14,7 @@ export default function Home() {
 					<ReservationCard />
 				</div>
 				<div className='col-span-3'>
-					<FeedbackCard />
+					<CalendarDashboard />
 				</div>
 			</div>
 			<div className='grid grid-cols-10 gap-6'>
@@ -22,7 +22,7 @@ export default function Home() {
 					<FoodCard />
 				</div>
 				<div className='col-span-3'>
-					<CalendarDashboard />
+					<FeedbackCard />
 				</div>
 			</div>
 		</div>
