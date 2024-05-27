@@ -3,11 +3,11 @@ import { FC } from 'react'
 
 const OverviewCard: FC = () => {
 	return (
-		<Card className='w-full bg-white rounded-md border-none'>
+		<Card className='w-full h-full bg-white rounded-md border-none'>
 			<CardHeader>
 				<CardTitle>Overview</CardTitle>
 			</CardHeader>
-			<CardContent className='flex justify-between'>
+			<CardContent className='flex gap-x-32 gap-y-20 flex-wrap'>
 				<div className='flex items-end gap-4'>
 					<div className='flex flex-col'>
 						<p className='text-greyMuted text-base'>Incoming</p>

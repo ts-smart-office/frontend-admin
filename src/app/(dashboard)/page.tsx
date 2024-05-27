@@ -14,13 +14,17 @@ export default async function Home() {
 
 	return (
 		<div className='px-4 font-urbanist flex flex-col gap-6'>
-			<OverviewCard />
 			<div className='grid grid-cols-10 gap-6'>
-				<div className='col-span-7'>
-					<ReservationCard />
+				<div className='h-full col-span-7'>
+					<OverviewCard />
 				</div>
 				<div className='col-span-3'>
 					<CalendarDashboard />
+				</div>
+			</div>
+			<div className='grid grid-cols-10 gap-6'>
+				<div className='col-span-10'>
+					<ReservationCard />
 				</div>
 			</div>
 			<div className='grid grid-cols-10 gap-6'>

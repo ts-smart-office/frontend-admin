@@ -13,14 +13,48 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { STATUS, updateReservationSchema } from '@/utils/form-schema'
+import { apiUpdateStatus } from '@/api/reservationApi'
+import { useToast } from '../ui/use-toast'
+import { useRouter } from 'next/navigation'
 
-const FormUpdateReservation: FC = () => {
+type TFormUpdateReservationProps = {
+	status: any
+	idReservation: string
+}
+
+const FormUpdateReservation: FC<TFormUpdateReservationProps> = ({
+	status,
+	idReservation,
+}) => {
+	const { toast } = useToast()
+	const router = useRouter()
 	const form = useForm<z.infer<typeof updateReservationSchema>>({
 		resolver: zodResolver(updateReservationSchema),
+		defaultValues: {
+			status: status,
+		},
 	})
 
-	function onSubmit(data: z.infer<typeof updateReservationSchema>) {
-		console.log(data)
+	async function onSubmit(data: z.infer<typeof updateReservationSchema>) {
+		const formData = new FormData()
+		formData.append('_method', 'PUT')
+		formData.append('status', data.status)
+		await apiUpdateStatus(idReservation, formData)
+			.then(res => {
+				toast({
+					description: res.data.message,
+				})
+				setTimeout(function () {
+					router.push('/reservations')
+				}, 1000)
+			})
+			.catch(error => {
+				if (error.response) {
+					toast({
+						description: error.response.data.message,
+					})
+				}
+			})
 	}
 	return (
 		<Form {...form}>
