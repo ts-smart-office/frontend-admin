@@ -29,6 +29,7 @@ const ReservationCard: FC = () => {
 	const getIncomingReservations = async () => {
 		await apiReservations('incoming')
 			.then(res => {
+				console.log(res.data.data)
 				setReservations(res.data.data)
 				setLoading(false)
 			})
@@ -48,7 +49,7 @@ const ReservationCard: FC = () => {
 			<CardHeader>
 				<CardTitle>Incoming Reservations</CardTitle>
 			</CardHeader>
-			{reservations.length >= 0 ? (
+			{reservations.length <= 0 ? (
 				<CardContent className='text-xl'>
 					There is no incoming reservation
 				</CardContent>
@@ -82,9 +83,9 @@ const ReservationCard: FC = () => {
 							</TableHeader>
 							<TableBody>
 								{reservations.map(item => (
-									<TableRow>
+									<TableRow key={item.id}>
 										<TableCell className='text-base text-darkColor'>
-											User
+											{item.user.name}
 										</TableCell>
 										<TableCell className='text-base text-darkColor'>
 											{item.room.name}

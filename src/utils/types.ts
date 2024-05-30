@@ -32,6 +32,13 @@ export interface IFood {
 	items: IFoodItem[]
 }
 
+export interface IBodyFood {
+	name: string
+	category: string
+	price: number
+	items: string[]
+}
+
 export interface IDetailsReservation {
 	id: string
 	date: string
@@ -48,4 +55,31 @@ export interface IDetailsReservation {
 	user: User
 	room: Room
 	foods: IFood[]
+}
+
+interface IFacility {
+	id: number
+	name: string
+}
+
+interface IPrice {
+	id: number
+	type: string
+	price: number
+	created_at: string
+	updated_at: string
+}
+
+export interface IAllRoom {
+	id: number
+	name: string
+	max_capacity: number
+	description: string
+	reservation_lead_time: number
+	facilities: IFacility[]
+	prices: IPrice[]
+	image_urls: string[]
+	created_at: string
+	updated_at: string
+	reserved_dates: string[]
 }

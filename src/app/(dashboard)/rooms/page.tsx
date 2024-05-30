@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import TableRoom from '@/components/rooms/TableRoom'
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -7,9 +7,9 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import TableFoods from '@/components/foods/TableFoods'
+import { FC } from 'react'
 
-const Foods: FC = () => {
+const page: FC = () => {
 	return (
 		<div className='px-4 font-urbanist flex flex-col gap-6'>
 			<Breadcrumb>
@@ -23,9 +23,9 @@ const Foods: FC = () => {
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<TableFoods />
+			<TableRoom />
 		</div>
 	)
 }
 
-export default Foods
+export default page

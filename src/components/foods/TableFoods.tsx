@@ -1,4 +1,5 @@
-import { FC } from 'react'
+'use client'
+import { FC, useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Search } from 'lucide-react'
 import { Input } from '../ui/input'
@@ -10,18 +11,33 @@ import {
 	TableHeader,
 	TableRow,
 } from '../ui/table'
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuTrigger,
-} from '../ui/dropdown-menu'
-import { Button } from '../ui/button'
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
+import { IFood } from '@/utils/types'
+import { apiFoods } from '@/api/foodApi'
+import { rupiahCurrency } from '@/lib/utils'
+import DialogEditFood from './DialogEditFood'
+import DialogCreateFood from './DialogCreateFood'
 
 const TableFoods: FC = () => {
+	const [foods, setFoods] = useState<IFood[]>([])
+	const [loading, setLoading] = useState<boolean>(true)
+
+	const fetchAllFoods = async () => {
+		await apiFoods()
+			.then(res => {
+				setFoods(res.data.data)
+				setLoading(false)
+			})
+			.catch(error => {
+				if (error.response) {
+					console.log(error.response)
+				}
+			})
+	}
+
+	useEffect(() => {
+		fetchAllFoods()
+	}, [])
+
 	return (
 		<Card className='rounded-md border-none'>
 			<CardHeader>
@@ -35,62 +51,58 @@ const TableFoods: FC = () => {
 							className='w-full rounded-lg bg-background pl-8'
 						/>
 					</div>
-					<Button className='bg-greenBrand px-8 h-fit text-lg hover:bg-opacity-80 hover:bg-greenBrand'>
-						<Link href='/foods/create'>Create food</Link>
-					</Button>
+					<DialogCreateFood />
 				</div>
 			</CardHeader>
 			<CardContent>
-				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead className='text-base font-semibold text-muted-foreground'>
-								Category
-							</TableHead>
-							<TableHead className='text-base font-semibold text-muted-foreground'>
-								Food name
-							</TableHead>
-							<TableHead className='text-base font-semibold text-muted-foreground'>
-								Food price
-							</TableHead>
-							<TableHead className='text-base font-semibold text-muted-foreground'>
-								Food items
-							</TableHead>
-							<TableHead className='text-base font-semibold text-muted-foreground text-center'>
-								Action
-							</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						<TableRow>
-							<TableCell className='text-base text-darkColor'>Snack</TableCell>
-							<TableCell className='text-base text-darkColor'>
-								Paket 1
-							</TableCell>
-							<TableCell className='text-base text-darkColor'>15.215</TableCell>
-							<TableCell className='text-base text-darkColor'>
-								item 1, item 2, item 3
-							</TableCell>
-							<TableCell className='text-base text-darkColor flex justify-center'>
-								<DropdownMenu>
-									<DropdownMenuTrigger asChild>
-										<Button aria-haspopup='true' size='icon' variant='ghost'>
-											<EllipsisVerticalIcon className='h-4 w-4' />
-											<span className='sr-only'>Toggle menu</span>
-										</Button>
-									</DropdownMenuTrigger>
-									<DropdownMenuContent align='end'>
-										<DropdownMenuLabel>Actions</DropdownMenuLabel>
-										<Link href='/foods/1'>
-											<DropdownMenuItem>Edit</DropdownMenuItem>
-										</Link>
-										<DropdownMenuItem>Delete</DropdownMenuItem>
-									</DropdownMenuContent>
-								</DropdownMenu>
-							</TableCell>
-						</TableRow>
-					</TableBody>
-				</Table>
+				{loading ? (
+					<p>Loading...</p>
+				) : foods.length <= 0 ? (
+					<p>There is no reservation data!</p>
+				) : (
+					<Table>
+						<TableHeader>
+							<TableRow>
+								<TableHead className='text-base font-semibold text-muted-foreground'>
+									Food Name
+								</TableHead>
+								<TableHead className='text-base font-semibold text-muted-foreground'>
+									Food Category
+								</TableHead>
+								<TableHead className='text-base font-semibold text-muted-foreground'>
+									Food Price
+								</TableHead>
+								<TableHead className='text-base font-semibold text-muted-foreground'>
+									Food Items
+								</TableHead>
+								<TableHead className='text-base font-semibold text-muted-foreground text-center'>
+									Action
+								</TableHead>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{foods.map(item => (
+								<TableRow key={item.id}>
+									<TableCell className='text-base text-darkColor'>
+										{item.name}
+									</TableCell>
+									<TableCell className='text-base text-darkColor'>
+										{item.category}
+									</TableCell>
+									<TableCell className='text-base text-darkColor'>
+										{rupiahCurrency.format(item.price)}
+									</TableCell>
+									<TableCell className='text-base text-darkColor'>
+										{item.items.map(item => item.name).join(', ')}
+									</TableCell>
+									<TableCell className='text-base text-darkColor flex justify-center'>
+										<DialogEditFood idFood={item.id} />
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				)}
 			</CardContent>
 		</Card>
 	)

@@ -1,3 +1,4 @@
+'use client'
 import {
 	Form,
 	FormControl,
@@ -21,21 +22,15 @@ import { FC } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '../ui/button'
-import { IFood } from '@/utils/types'
+import { apiCreateFood } from '@/api/foodApi'
+import { useRouter } from 'next/navigation'
+import { useToast } from '../ui/use-toast'
 
-type TFormEditFood = {
-	details: IFood | null
-}
-
-const FormEditFood: FC<TFormEditFood> = ({ details }) => {
+const FormCreateFood: FC = () => {
+	const router = useRouter()
+	const { toast } = useToast()
 	const form = useForm<z.infer<typeof addFoodSchema>>({
 		resolver: zodResolver(addFoodSchema),
-		defaultValues: {
-			name: details?.name,
-			category: details?.category,
-			price: details?.price.toString(),
-			items: details?.items.map(item => ({ value: item.name })),
-		},
 		mode: 'onChange',
 	})
 
@@ -44,15 +39,27 @@ const FormEditFood: FC<TFormEditFood> = ({ details }) => {
 		name: 'items',
 	})
 
-	function onSubmit(data: z.infer<typeof addFoodSchema>) {
+	async function onSubmit(data: z.infer<typeof addFoodSchema>) {
 		const bodyAddFood = {
 			name: data.name,
 			category: data.category,
 			price: parseInt(data.price),
 			items: data.items.map(item => item.value),
 		}
-
-		console.log(bodyAddFood)
+		await apiCreateFood(bodyAddFood)
+			.then(res => {
+				toast({
+					description: res.data.message,
+				})
+				location.reload()
+			})
+			.catch(error => {
+				if (error.response) {
+					toast({
+						description: error.response.data.message,
+					})
+				}
+			})
 	}
 
 	return (
@@ -152,11 +159,11 @@ const FormEditFood: FC<TFormEditFood> = ({ details }) => {
 					type='submit'
 					className='w-fit self-end mt-10 bg-greenBrand px-8 h-fit text-lg hover:bg-opacity-80 hover:bg-greenBrand'
 				>
-					Edit food
+					Create food
 				</Button>
 			</form>
 		</Form>
 	)
 }
 
-export default FormEditFood
+export default FormCreateFood

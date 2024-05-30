@@ -35,8 +35,6 @@ const FoodCard: FC = () => {
 		fetchAllFoods()
 	}, [])
 
-	console.log(foods)
-
 	return (
 		<Card className='rounded-md border-none'>
 			<CardHeader>

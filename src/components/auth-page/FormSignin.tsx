@@ -41,9 +41,7 @@ const FormSignin: FC = () => {
 				toast({
 					description: res.data.message,
 				})
-				setTimeout(function () {
-					router.push('/')
-				}, 1000)
+				router.push('/')
 			})
 			.catch(error => {
 				if (error.response) {
