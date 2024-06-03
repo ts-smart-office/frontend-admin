@@ -22,19 +22,23 @@ import { useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '../ui/button'
 import { IFood } from '@/utils/types'
+import { apiEditFood } from '@/api/foodApi'
+import { useToast } from '../ui/use-toast'
 
 type TFormEditFood = {
 	details: IFood | null
 }
 
 const FormEditFood: FC<TFormEditFood> = ({ details }) => {
+	const { toast } = useToast()
+
 	const form = useForm<z.infer<typeof addFoodSchema>>({
 		resolver: zodResolver(addFoodSchema),
 		defaultValues: {
 			name: details?.name,
 			category: details?.category,
 			price: details?.price.toString(),
-			items: details?.items.map(item => ({ value: item.name })),
+			items: details?.items.map(item => ({ name: item.name, id: item.id })),
 		},
 		mode: 'onChange',
 	})
@@ -44,15 +48,29 @@ const FormEditFood: FC<TFormEditFood> = ({ details }) => {
 		name: 'items',
 	})
 
-	function onSubmit(data: z.infer<typeof addFoodSchema>) {
-		const bodyAddFood = {
+	async function onSubmit(data: z.infer<typeof addFoodSchema>) {
+		const bodyEditFood = {
 			name: data.name,
 			category: data.category,
 			price: parseInt(data.price),
-			items: data.items.map(item => item.value),
+			items: data.items.map(item => ({ name: item.name, id: item.id })),
+			_method: 'put',
 		}
 
-		console.log(bodyAddFood)
+		await apiEditFood(bodyEditFood, details?.id!)
+			.then(res => {
+				toast({
+					description: res.data.message,
+				})
+				location.reload()
+			})
+			.catch(error => {
+				if (error.response) {
+					toast({
+						description: error.response.data.message,
+					})
+				}
+			})
 	}
 
 	return (
@@ -113,7 +131,7 @@ const FormEditFood: FC<TFormEditFood> = ({ details }) => {
 						<FormField
 							control={form.control}
 							key={field.id}
-							name={`items.${index}.value`}
+							name={`items.${index}.name`}
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel className={cn(index !== 0 && 'sr-only')}>
@@ -143,7 +161,7 @@ const FormEditFood: FC<TFormEditFood> = ({ details }) => {
 					<Button
 						type='button'
 						variant='outline'
-						onClick={() => append({ value: '' })}
+						onClick={() => append({ name: '' })}
 					>
 						Add food item
 					</Button>

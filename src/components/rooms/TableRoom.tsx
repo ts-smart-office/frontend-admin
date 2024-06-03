@@ -1,7 +1,7 @@
 'use client'
 import { FC, useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
-import { Search } from 'lucide-react'
+import { Divide, Search } from 'lucide-react'
 import { Input } from '../ui/input'
 import {
 	Table,
@@ -17,6 +17,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { apiRooms } from '@/api/roomApi'
 import { IAllRoom } from '@/utils/types'
+import DialogCreateRoom from './create/DialogCreateRoom'
+import DialogRoom from './DialogRoom'
 
 const TableRoom: FC = () => {
 	const [rooms, setRooms] = useState<IAllRoom[]>([])
@@ -52,9 +54,7 @@ const TableRoom: FC = () => {
 							className='w-full rounded-lg bg-background pl-8'
 						/>
 					</div>
-					<Button className='bg-greenBrand px-8 h-fit text-lg hover:bg-opacity-80 hover:bg-greenBrand'>
-						<Link href='/foods/create'>Create room</Link>
-					</Button>
+					<DialogCreateRoom />
 				</div>
 			</CardHeader>
 			<CardContent>
@@ -85,13 +85,19 @@ const TableRoom: FC = () => {
 							{rooms.map(room => (
 								<TableRow key={room.id}>
 									<TableCell className='hidden sm:table-cell'>
-										<Image
-											alt='Product image'
-											className='aspect-square rounded-md object-cover'
-											height='64'
-											src={room.image_urls[0]}
-											width='64'
-										/>
+										{!room.image_urls[0] ? (
+											<div className='h-16 w-16 flex items-center justify-center'>
+												No images
+											</div>
+										) : (
+											<Image
+												alt='Product image'
+												className='aspect-square rounded-md object-cover'
+												height='64'
+												src={room.image_urls[0]}
+												width='64'
+											/>
+										)}
 									</TableCell>
 									<TableCell className='font-medium'>{room.name}</TableCell>
 									<TableCell className='w-[560px]'>
@@ -109,10 +115,7 @@ const TableRoom: FC = () => {
 										))}
 									</TableCell>
 									<TableCell>
-										<Button aria-haspopup='true' size='icon' variant='ghost'>
-											<EllipsisVerticalIcon className='h-4 w-4' />
-											<span className='sr-only'>Toggle menu</span>
-										</Button>
+										<DialogRoom idRoom={room.id.toString()} />
 									</TableCell>
 								</TableRow>
 							))}

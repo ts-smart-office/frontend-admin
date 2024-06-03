@@ -18,8 +18,17 @@ export const apiDetailsFood = (id: string) => {
 	})
 }
 
-export const apiCreateFood = (data: IBodyFood) => {
+export const apiCreateFood = (data: any) => {
 	return axiosInstance.post('/api/admin/foods', data, {
+		headers: {
+			accept: 'application/json',
+			'X-XSRF-TOKEN': getCookie('XSRF-TOKEN'),
+		},
+	})
+}
+
+export const apiEditFood = (data: any, id: string) => {
+	return axiosInstance.post(`/api/admin/foods/${id}`, data, {
 		headers: {
 			accept: 'application/json',
 			'X-XSRF-TOKEN': getCookie('XSRF-TOKEN'),

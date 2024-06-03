@@ -23,11 +23,9 @@ import { useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '../ui/button'
 import { apiCreateFood } from '@/api/foodApi'
-import { useRouter } from 'next/navigation'
 import { useToast } from '../ui/use-toast'
 
 const FormCreateFood: FC = () => {
-	const router = useRouter()
 	const { toast } = useToast()
 	const form = useForm<z.infer<typeof addFoodSchema>>({
 		resolver: zodResolver(addFoodSchema),
@@ -44,7 +42,7 @@ const FormCreateFood: FC = () => {
 			name: data.name,
 			category: data.category,
 			price: parseInt(data.price),
-			items: data.items.map(item => item.value),
+			items: data.items.map(item => item.name),
 		}
 		await apiCreateFood(bodyAddFood)
 			.then(res => {
@@ -120,7 +118,7 @@ const FormCreateFood: FC = () => {
 						<FormField
 							control={form.control}
 							key={field.id}
-							name={`items.${index}.value`}
+							name={`items.${index}.name`}
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel className={cn(index !== 0 && 'sr-only')}>
@@ -150,7 +148,7 @@ const FormCreateFood: FC = () => {
 					<Button
 						type='button'
 						variant='outline'
-						onClick={() => append({ value: '' })}
+						onClick={() => append({ name: '' })}
 					>
 						Add food item
 					</Button>

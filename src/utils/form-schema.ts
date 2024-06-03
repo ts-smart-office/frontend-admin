@@ -25,8 +25,43 @@ export const addFoodSchema = z.object({
 	price: z.string().refine(val => !Number.isNaN(parseInt(val, 10))),
 	items: z.array(
 		z.object({
-			value: z.string({ required_error: 'Please add item of food' }),
+			id: z.number().optional(),
+			name: z.string({ required_error: 'Please add item of food' }),
 		}),
 		{ required_error: 'Please add item of food' }
 	),
+})
+
+const priceType = z.enum([
+	'fullday',
+	'halfday',
+	'podcastStreaming',
+	'podcastRecording',
+])
+
+export const addRoomSchema = z.object({
+	name: z.string(),
+	max_capacity: z.string().refine(val => !Number.isNaN(parseInt(val, 10))),
+	description: z.string(),
+	reservation_lead_time: z
+		.string()
+		.refine(val => !Number.isNaN(parseInt(val, 10))),
+	facilities: z.array(
+		z.object({
+			id: z.number().optional(),
+			name: z.string({ required_error: 'Please add facilities of room' }),
+		}),
+		{ required_error: 'Please add facilities of food' }
+	),
+	prices: z.array(
+		z.object({
+			id: z.number().optional(),
+			type: priceType,
+			price: z.number(),
+		})
+	),
+})
+
+export const uploadImagesRoom = z.object({
+	attachment: z.any(),
 })

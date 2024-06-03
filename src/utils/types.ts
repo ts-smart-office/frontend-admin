@@ -83,3 +83,24 @@ export interface IAllRoom {
 	updated_at: string
 	reserved_dates: string[]
 }
+
+export enum PriceType {
+	HALFDAY = 'halfday',
+	FULLDAY = 'fullday',
+	PODCAST_STREAMING = 'podcastStreaming',
+	PODCAST_RECORDING = 'podcastRecording',
+}
+
+interface ICreatePrice {
+	type: PriceType
+	price: number
+}
+
+export interface ICreateRoom {
+	name: string
+	max_capacity: number
+	description: string
+	reservation_lead_time: number
+	facilities: IFacility[]
+	prices: ICreatePrice[]
+}
