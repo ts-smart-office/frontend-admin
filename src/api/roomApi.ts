@@ -44,3 +44,21 @@ export const apiDetailsRoom = (id: string) => {
 		},
 	})
 }
+
+export const apiReservationTypes = () => {
+	return axiosInstance.get('/api/admin/reservation-types', {
+		headers: {
+			accept: 'application/json',
+			'X-XSRF-TOKEN': getCookie('XSRF-TOKEN'),
+		},
+	})
+}
+
+export const apiDeleteRoom = (id: string) => {
+	return axiosInstance.delete(`/api/admin/rooms/${id}`, {
+		headers: {
+			accept: 'application/json',
+			'X-XSRF-TOKEN': getCookie('XSRF-TOKEN'),
+		},
+	})
+}

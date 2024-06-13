@@ -56,8 +56,16 @@ export const addRoomSchema = z.object({
 	prices: z.array(
 		z.object({
 			id: z.number().optional(),
-			type: priceType,
-			price: z.number(),
+			reservation_type: z.object({
+				id: z.number().optional(),
+				name: z.string(),
+				start_time: z.string().optional(),
+				end_time: z.string().optional(),
+			}),
+			price: z
+				.number()
+				.min(4, { message: 'Price must be minimum 4 characters' }),
+			pricing_unit: z.string(),
 		})
 	),
 })

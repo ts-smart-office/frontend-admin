@@ -35,3 +35,12 @@ export const apiEditFood = (data: any, id: string) => {
 		},
 	})
 }
+
+export const apiDeleteFood = (id: string) => {
+	return axiosInstance.delete(`/api/admin/foods/${id}`, {
+		headers: {
+			accept: 'application/json',
+			'X-XSRF-TOKEN': getCookie('XSRF-TOKEN'),
+		},
+	})
+}

@@ -17,22 +17,30 @@ import {
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { addRoomSchema } from '@/utils/form-schema'
 import TextareaAutosize from 'react-textarea-autosize'
-import { PriceType } from '@/utils/types'
-import { apiEditRoom } from '@/api/roomApi'
+import { apiEditRoom, apiReservationTypes } from '@/api/roomApi'
 
 type TFormEditRoomProps = {
 	details: any | null
 }
 
+type TTypesProps = {
+	id: number
+	name: string
+	start_time: string
+	end_time: string
+}
+
 const FormEditRoom: FC<TFormEditRoomProps> = ({ details }) => {
 	const { toast } = useToast()
+	const [types, setTypes] = useState<TTypesProps[]>([])
+
 	const form = useForm<z.infer<typeof addRoomSchema>>({
 		resolver: zodResolver(addRoomSchema),
 		mode: 'onChange',
@@ -41,14 +49,15 @@ const FormEditRoom: FC<TFormEditRoomProps> = ({ details }) => {
 			description: details?.description,
 			max_capacity: details?.max_capacity.toString(),
 			reservation_lead_time: details?.reservation_lead_time.toString(),
-			facilities: details?.facilities.map(item => ({
+			facilities: details?.facilities.map((item: any) => ({
 				name: item.name,
 				id: item.id,
 			})),
-			prices: details?.prices.map(item => ({
-				type: item.type,
+			prices: details?.reservation_options.map((item: any) => ({
+				reservation_type: item.reservation_type,
 				price: item.price,
 				id: item.id,
+				pricing_unit: item.pricing_unit,
 			})),
 		},
 	})
@@ -72,17 +81,38 @@ const FormEditRoom: FC<TFormEditRoomProps> = ({ details }) => {
 	})
 
 	async function onSubmit(data: z.infer<typeof addRoomSchema>) {
-		const bodyAddRoom = {
+		const initialFacilityIds =
+			details?.facilities.map((item: any) => item.id) || []
+
+		const updatedFacilityIds = data.facilities.map(item => item.id)
+
+		const deletedFacilityIds = initialFacilityIds.filter(
+			(id: any) => !updatedFacilityIds.includes(id)
+		)
+
+		const newFacilities = initialFacilityIds.map((id: any) => ({
+			id: id,
+			name: deletedFacilityIds.includes(id)
+				? null
+				: data.facilities.find(f => f.id === id)?.name,
+		}))
+
+		const bodyEditRoom = {
 			description: data.description,
 			max_capacity: data.max_capacity,
 			name: data.name,
 			reservation_lead_time: data.reservation_lead_time,
-			facilities: data.facilities.map(item => ({ name: item.name })),
-			prices: data.prices.map(item => ({ type: item.type, price: item.price })),
+			facilities: newFacilities,
+			reservation_options: data.prices.map((item: any) => ({
+				id: item.id,
+				reservation_type_id: item.reservation_type.id,
+				price: item.price,
+				pricing_unit: item.pricing_unit,
+			})),
 			_method: 'put',
 		}
 
-		await apiEditRoom(bodyAddRoom, details.id!)
+		await apiEditRoom(bodyEditRoom, details.id!)
 			.then(res => {
 				toast({
 					description: res.data.message,
@@ -97,6 +127,22 @@ const FormEditRoom: FC<TFormEditRoomProps> = ({ details }) => {
 				}
 			})
 	}
+
+	const fetchReserationTypes = async () => {
+		await apiReservationTypes()
+			.then(res => {
+				setTypes(res.data.data)
+			})
+			.catch(error => {
+				if (error.response) {
+					console.log(error.response)
+				}
+			})
+	}
+
+	useEffect(() => {
+		fetchReserationTypes()
+	}, [])
 
 	return (
 		<Form {...form}>
@@ -203,22 +249,45 @@ const FormEditRoom: FC<TFormEditRoomProps> = ({ details }) => {
 											</FormLabel>
 											<FormControl>
 												<div className='flex gap-4 items-center'>
-													<div className='flex gap-2'>
+													<div className='flex-1 flex gap-2'>
 														<Select
-															onValueChange={value =>
-																field.onChange({ ...field.value, type: value })
-															}
-															defaultValue={field.value.type}
+															onValueChange={value => {
+																const selectedType = types.find(
+																	type => type.id === Number(value)
+																)
+																if (selectedType) {
+																	field.onChange({
+																		...field.value,
+																		reservation_type: {
+																			id: selectedType.id,
+																			name: selectedType.name,
+																			start_time: selectedType.start_time,
+																			end_time: selectedType.end_time,
+																		},
+																	})
+																}
+															}}
 														>
-															<FormControl className='text-sm w-fit mb-4'>
+															<FormControl className='text-sm mb-4'>
 																<SelectTrigger>
-																	<SelectValue placeholder={field.value.type} />
+																	<SelectValue
+																		placeholder={
+																			types.find(
+																				type =>
+																					type.id ===
+																					field.value.reservation_type.id
+																			)?.name
+																		}
+																	/>
 																</SelectTrigger>
 															</FormControl>
 															<SelectContent>
-																{Object.values(PriceType).map(item => (
-																	<SelectItem key={item} value={item}>
-																		{item}
+																{types.map(item => (
+																	<SelectItem
+																		key={item.id}
+																		value={item.id.toString()}
+																	>
+																		{item.name}
 																	</SelectItem>
 																))}
 															</SelectContent>
@@ -239,6 +308,26 @@ const FormEditRoom: FC<TFormEditRoomProps> = ({ details }) => {
 																})
 															}
 														/>
+														<Select
+															name={`prices.${index}.pricing_unit`}
+															onValueChange={value =>
+																field.onChange({
+																	...field.value,
+																	pricing_unit: value,
+																})
+															}
+															defaultValue={field.value.pricing_unit}
+														>
+															<FormControl className='text-sm mb-4'>
+																<SelectTrigger>
+																	<SelectValue />
+																</SelectTrigger>
+															</FormControl>
+															<SelectContent>
+																<SelectItem value={'pax'}>pax</SelectItem>
+																<SelectItem value={'hour'}>hour</SelectItem>
+															</SelectContent>
+														</Select>
 													</div>
 													<Button
 														variant='ghost'
@@ -249,7 +338,6 @@ const FormEditRoom: FC<TFormEditRoomProps> = ({ details }) => {
 													</Button>
 												</div>
 											</FormControl>
-											<FormMessage />
 										</FormItem>
 									)}
 								/>
@@ -257,7 +345,15 @@ const FormEditRoom: FC<TFormEditRoomProps> = ({ details }) => {
 							<Button
 								type='button'
 								variant='outline'
-								onClick={() => appendPrice({ type: 'halfday', price: 0 })}
+								onClick={() =>
+									appendPrice({
+										reservation_type: {
+											name: '',
+										},
+										price: 0,
+										pricing_unit: '',
+									})
+								}
 							>
 								Add price
 							</Button>
@@ -267,7 +363,7 @@ const FormEditRoom: FC<TFormEditRoomProps> = ({ details }) => {
 						control={form.control}
 						name='description'
 						render={({ field }) => (
-							<FormItem className='w-full flex flex-col'>
+							<FormItem className='w-full flex flex-col mr-2'>
 								<FormLabel>Room description</FormLabel>
 								<FormControl>
 									<TextareaAutosize

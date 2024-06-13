@@ -28,10 +28,10 @@ export default async function Home() {
 				</div>
 			</div>
 			<div className='grid grid-cols-10 gap-6'>
-				<div className='col-span-7'>
+				<div className='col-span-6'>
 					<FoodCard />
 				</div>
-				<div className='col-span-3'>
+				<div className='col-span-4'>
 					<FeedbackCard />
 				</div>
 			</div>

@@ -136,7 +136,7 @@ const TableReservations: FC = () => {
 												{item.room.name}
 											</TableCell>
 											<TableCell className='text-base text-darkColor'>
-												{item.type}
+												{item.type_name} ({item.start_time} - {item.end_time})
 											</TableCell>
 											<TableCell className='text-base text-darkColor'>
 												{item.date}
@@ -210,7 +210,7 @@ const TableReservations: FC = () => {
 												{item.room.name}
 											</TableCell>
 											<TableCell className='text-base text-darkColor'>
-												{item.type}
+												{item.type_name} ({item.start_time} - {item.end_time})
 											</TableCell>
 											<TableCell className='text-base text-darkColor'>
 												{item.date}
@@ -284,7 +284,7 @@ const TableReservations: FC = () => {
 												{item.room.name}
 											</TableCell>
 											<TableCell className='text-base text-darkColor'>
-												{item.type}
+												{item.type_name} ({item.start_time} - {item.end_time})
 											</TableCell>
 											<TableCell className='text-base text-darkColor'>
 												{item.date}

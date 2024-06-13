@@ -41,20 +41,42 @@ export interface IBodyFood {
 
 export interface IDetailsReservation {
 	id: string
+	type_name: string
 	date: string
-	type: string
+	start_time: string
+	end_time: string
+	price: number
+	pricing_unit: string
 	total_persons: number
-	room_price: number
 	total_price: number
-	optional_message: string | null
+	optional_message: string
 	status: string
 	status_message: string | null
 	proof_of_payment_url: string | null
 	created_at: string
 	updated_at: string
-	user: User
-	room: Room
-	foods: IFood[]
+	user: {
+		id: string
+		name: string
+		email: string
+		phone: string
+		company: string
+	}
+	room: {
+		id: number
+		name: string
+	}
+	foods: {
+		id: string
+		name: string
+		category: string
+		price: number
+		items: {
+			id: string
+			name: string
+		}[]
+	}[]
+	review: null
 }
 
 interface IFacility {
@@ -70,6 +92,20 @@ interface IPrice {
 	updated_at: string
 }
 
+interface ReservationType {
+	id: number
+	name: string
+	start_time: string
+	end_time: string
+}
+
+interface IReservationOption {
+	id: number
+	reservation_type: ReservationType
+	price: number
+	pricing_unit: string
+}
+
 export interface IAllRoom {
 	id: number
 	name: string
@@ -77,7 +113,7 @@ export interface IAllRoom {
 	description: string
 	reservation_lead_time: number
 	facilities: IFacility[]
-	prices: IPrice[]
+	reservation_options: IReservationOption[]
 	image_urls: string[]
 	created_at: string
 	updated_at: string
@@ -102,5 +138,5 @@ export interface ICreateRoom {
 	description: string
 	reservation_lead_time: number
 	facilities: IFacility[]
-	prices: ICreatePrice[]
+	prices: IReservationOption[]
 }

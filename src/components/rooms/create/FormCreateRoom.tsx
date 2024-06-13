@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
@@ -25,7 +25,14 @@ import { useToast } from '@/components/ui/use-toast'
 import { addRoomSchema } from '@/utils/form-schema'
 import TextareaAutosize from 'react-textarea-autosize'
 import { PriceType } from '@/utils/types'
-import { apiCreateRoom } from '@/api/roomApi'
+import { apiCreateRoom, apiReservationTypes } from '@/api/roomApi'
+
+type TTypesProps = {
+	id: number
+	name: string
+	start_time: string
+	end_time: string
+}
 
 const FormCreateRoom: FC = () => {
 	const { toast } = useToast()
@@ -59,7 +66,12 @@ const FormCreateRoom: FC = () => {
 			name: data.name,
 			reservation_lead_time: data.reservation_lead_time,
 			facilities: data.facilities.map(item => ({ name: item.name })),
-			prices: data.prices.map(item => ({ type: item.type, price: item.price })),
+			reservation_options: data.prices.map(item => ({
+				id: item.id,
+				reservation_type_id: item.reservation_type.id,
+				price: item.price,
+				pricing_unit: item.pricing_unit,
+			})),
 		}
 
 		await apiCreateRoom(bodyAddRoom)
@@ -77,15 +89,31 @@ const FormCreateRoom: FC = () => {
 				}
 			})
 	}
+	const [types, setTypes] = useState<TTypesProps[]>([])
+	const fetchReserationTypes = async () => {
+		await apiReservationTypes()
+			.then(res => {
+				setTypes(res.data.data)
+			})
+			.catch(error => {
+				if (error.response) {
+					console.log(error.response)
+				}
+			})
+	}
+
+	useEffect(() => {
+		fetchReserationTypes()
+	}, [])
 
 	return (
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				className='h-full flex flex-col justify-between gap-4'
+				className='h-full flex flex-col justify-between gap-4 overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
 			>
 				<div className='flex gap-8 rounded-none mb-20'>
-					<div className='w-full flex flex-col gap-4'>
+					<div className='w-full flex flex-col gap-4 ml-2'>
 						<FormField
 							control={form.control}
 							name='name'
@@ -171,52 +199,6 @@ const FormCreateRoom: FC = () => {
 							</Button>
 						</div>
 						<div>
-							{/* {fieldsPrice.map((field, index) => (
-								<FormField
-									control={form.control}
-									key={field.id}
-									name={`prices.${index}`}
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel className={cn(index !== 0 && 'sr-only')}>
-												Room prices
-											</FormLabel>
-											<FormControl>
-												<div className='flex gap-4 items-center'>
-													<div className='flex gap-2'>
-														<Select
-															onValueChange={field.onChange}
-															defaultValue={field.value.type}
-														>
-															<FormControl className='text-sm w-fit mb-4'>
-																<SelectTrigger>
-																	<SelectValue placeholder={field.value.type} />
-																</SelectTrigger>
-															</FormControl>
-															<SelectContent>
-																{Object.values(PriceType).map(item => (
-																	<SelectItem key={item} value={item}>
-																		{item}
-																	</SelectItem>
-																))}
-															</SelectContent>
-														</Select>
-														<Input type='number' placeholder='Price' />
-													</div>
-													<Button
-														variant='ghost'
-														className='mb-4'
-														onClick={() => removePrice(index)}
-													>
-														Remove
-													</Button>
-												</div>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							))} */}
 							{fieldsPrice.map((field, index) => (
 								<FormField
 									control={form.control}
@@ -229,22 +211,47 @@ const FormCreateRoom: FC = () => {
 											</FormLabel>
 											<FormControl>
 												<div className='flex gap-4 items-center'>
-													<div className='flex gap-2'>
+													<div className='flex-1 flex gap-2'>
 														<Select
-															onValueChange={value =>
-																field.onChange({ ...field.value, type: value })
-															}
-															defaultValue={field.value.type}
+															onValueChange={value => {
+																const selectedType = types.find(
+																	type => type.id === Number(value)
+																)
+																if (selectedType) {
+																	field.onChange({
+																		...field.value,
+																		reservation_type: {
+																			id: selectedType.id,
+																			name: selectedType.name,
+																			start_time: selectedType.start_time,
+																			end_time: selectedType.end_time,
+																		},
+																	})
+																}
+															}}
 														>
-															<FormControl className='text-sm w-fit mb-4'>
+															<FormControl className='text-sm mb-4'>
 																<SelectTrigger>
-																	<SelectValue placeholder={field.value.type} />
+																	<SelectValue
+																		placeholder={
+																			!field.value.reservation_type.id
+																				? 'Select type'
+																				: types.find(
+																						type =>
+																							type.id ===
+																							field.value.reservation_type.id
+																				  )?.name
+																		}
+																	/>
 																</SelectTrigger>
 															</FormControl>
 															<SelectContent>
-																{Object.values(PriceType).map(item => (
-																	<SelectItem key={item} value={item}>
-																		{item}
+																{types.map(item => (
+																	<SelectItem
+																		key={item.id}
+																		value={item.id.toString()}
+																	>
+																		{item.name}
 																	</SelectItem>
 																))}
 															</SelectContent>
@@ -265,6 +272,32 @@ const FormCreateRoom: FC = () => {
 																})
 															}
 														/>
+														<Select
+															name={`prices.${index}.pricing_unit`}
+															onValueChange={value =>
+																field.onChange({
+																	...field.value,
+																	pricing_unit: value,
+																})
+															}
+															defaultValue={field.value.pricing_unit}
+														>
+															<FormControl className='text-sm mb-4'>
+																<SelectTrigger>
+																	<SelectValue
+																		placeholder={
+																			!field.value.pricing_unit
+																				? 'Select pricing unit'
+																				: field.value.pricing_unit
+																		}
+																	/>
+																</SelectTrigger>
+															</FormControl>
+															<SelectContent>
+																<SelectItem value={'pax'}>pax</SelectItem>
+																<SelectItem value={'hour'}>hour</SelectItem>
+															</SelectContent>
+														</Select>
 													</div>
 													<Button
 														variant='ghost'
@@ -275,7 +308,6 @@ const FormCreateRoom: FC = () => {
 													</Button>
 												</div>
 											</FormControl>
-											<FormMessage />
 										</FormItem>
 									)}
 								/>
@@ -283,7 +315,15 @@ const FormCreateRoom: FC = () => {
 							<Button
 								type='button'
 								variant='outline'
-								onClick={() => appendPrice({ type: 'halfday', price: 0 })}
+								onClick={() =>
+									appendPrice({
+										reservation_type: {
+											name: '',
+										},
+										price: 0,
+										pricing_unit: '',
+									})
+								}
 							>
 								Add price
 							</Button>
@@ -293,7 +333,7 @@ const FormCreateRoom: FC = () => {
 						control={form.control}
 						name='description'
 						render={({ field }) => (
-							<FormItem className='w-full flex flex-col'>
+							<FormItem className='w-full flex flex-col mr-2'>
 								<FormLabel>Room description</FormLabel>
 								<FormControl>
 									<TextareaAutosize

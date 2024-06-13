@@ -35,17 +35,17 @@ const DetailReservationCard: FC<TDetailReservationCardProps> = ({
 	const snackFoods = details.foods.find(food => food.category === 'snack')
 	const lunchPrice = lunchFoods ? rupiahCurrency.format(lunchFoods.price) : '0'
 	const snackPrice = snackFoods ? rupiahCurrency.format(snackFoods.price) : '0'
-	const reservationPrice = rupiahCurrency.format(details.room_price)
+	const reservationPrice = rupiahCurrency.format(details.price)
 
 	const reservationTotal = rupiahCurrency.format(
-		details.room_price * details.total_persons
+		details.price * details.total_persons
 	)
 	const foodTotal = rupiahCurrency.format(
 		(lunchFoods ? lunchFoods.price * details.total_persons : 0) +
 			(snackFoods ? snackFoods.price * details.total_persons : 0)
 	)
 	const totalPayment = rupiahCurrency.format(
-		details.room_price * details.total_persons +
+		details.price * details.total_persons +
 			(lunchFoods ? lunchFoods.price * details.total_persons : 0) +
 			(snackFoods ? snackFoods.price * details.total_persons : 0)
 	)
@@ -89,7 +89,7 @@ const DetailReservationCard: FC<TDetailReservationCardProps> = ({
 							<p className='text-base lg:text-xl'>Reservation type</p>
 						</div>
 						<p className='text-base lg:text-xl text-greyMuted'>
-							{details.type}
+							{details.type_name} ({details.start_time} - {details.end_time})
 						</p>
 					</div>
 					<div className='w-full flex justify-between items-center'>

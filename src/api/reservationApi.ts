@@ -33,3 +33,12 @@ export const apiUpdateStatus = (id: string, data: any) => {
 		},
 	})
 }
+
+export const apiReviewReservation = () => {
+	return axiosInstance.get(`/api/admin/reviews`, {
+		headers: {
+			accept: 'application/json',
+			'X-XSRF-TOKEN': getCookie('XSRF-TOKEN'),
+		},
+	})
+}

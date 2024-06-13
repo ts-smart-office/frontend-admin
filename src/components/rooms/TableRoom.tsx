@@ -1,7 +1,7 @@
 'use client'
 import { FC, useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
-import { Divide, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { Input } from '../ui/input'
 import {
 	Table,
@@ -11,9 +11,6 @@ import {
 	TableHeader,
 	TableRow,
 } from '../ui/table'
-import { Button } from '../ui/button'
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
 import Image from 'next/image'
 import { apiRooms } from '@/api/roomApi'
 import { IAllRoom } from '@/utils/types'
@@ -64,27 +61,25 @@ const TableRoom: FC = () => {
 					<p>There is no reservation data!</p>
 				) : (
 					<Table>
-						<TableHeader>
+						<TableHeader className='text-base font-semibold text-muted-foreground'>
 							<TableRow>
-								<TableHead className='hidden w-[100px] sm:table-cell'>
+								<TableHead className='w-[100px]'>
 									<span className='sr-only'>Image</span>
 								</TableHead>
 								<TableHead>Name</TableHead>
 								<TableHead className='w-96'>Description</TableHead>
-								<TableHead className='hidden md:table-cell'>Capacity</TableHead>
-								<TableHead className='hidden md:table-cell'>
-									Facilities
-								</TableHead>
-								<TableHead className='hidden md:table-cell'>Price</TableHead>
+								<TableHead>Capacity</TableHead>
+								<TableHead>Facilities</TableHead>
+								<TableHead>Price</TableHead>
 								<TableHead>
 									<span className='sr-only'>Actions</span>
 								</TableHead>
 							</TableRow>
 						</TableHeader>
-						<TableBody>
+						<TableBody className='text-base'>
 							{rooms.map(room => (
 								<TableRow key={room.id}>
-									<TableCell className='hidden sm:table-cell'>
+									<TableCell>
 										{!room.image_urls[0] ? (
 											<div className='h-16 w-16 flex items-center justify-center'>
 												No images
@@ -99,18 +94,20 @@ const TableRoom: FC = () => {
 											/>
 										)}
 									</TableCell>
-									<TableCell className='font-medium'>{room.name}</TableCell>
+									<TableCell>{room.name}</TableCell>
 									<TableCell className='w-[560px]'>
 										{room.description}
 									</TableCell>
 									<TableCell>{room.max_capacity}</TableCell>
-									<TableCell className='w-[400px]'>
-										{room.facilities.map(item => item.name).join(', ')}
+									<TableCell className='flex flex-col gap-2'>
+										{room.facilities.map(item => (
+											<p key={item.id}>{item.name}</p>
+										))}
 									</TableCell>
 									<TableCell>
-										{room.prices.map(item => (
+										{room.reservation_options.map(item => (
 											<div key={item.id} className='flex flex-col'>
-												{item.type} : {item.price}
+												{item.reservation_type.name} : {item.price}
 											</div>
 										))}
 									</TableCell>
