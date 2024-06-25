@@ -8,7 +8,11 @@ const HeaderTitle: FC = () => {
 		var modifiedString = str.replace('/', '')
 		return modifiedString.charAt(0).toUpperCase() + modifiedString.slice(1)
 	}
-	const headerTitle = headerTitleFunc(pathname)
+
+	const segments = pathname.split('/')
+	const lastSegment = segments.find(segment => segment !== '')
+
+	const headerTitle = lastSegment ? headerTitleFunc(lastSegment) : ''
 
 	return <p className='font-semibold text-3xl'>{headerTitle}</p>
 }
