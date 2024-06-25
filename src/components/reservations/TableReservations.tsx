@@ -46,6 +46,7 @@ import SelectStatus from './SelectStatus'
 const statusReservation = [
 	{ key: 'Waiting Payment', value: 'waitingForPayment' },
 	{ key: 'Paid', value: 'paid' },
+	{ key: 'Approved', value: 'approved' },
 	{ key: 'Completed', value: 'completed' },
 ]
 
@@ -252,7 +253,9 @@ const TableReservations: FC = () => {
 														item.status === 'approved' ||
 														item.status === 'decline'
 													}
-													onClick={() => updateReservation(item.id!, 'decline')}
+													onClick={() =>
+														updateReservation(item.id!, 'declined')
+													}
 													className='mt-2 font-semibold bg-rose-500 text-white flex justify-center focus:bg-rose-500 focus:bg-opacity-80 focus:text-white'
 												>
 													Decline
