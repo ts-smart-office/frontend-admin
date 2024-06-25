@@ -20,6 +20,7 @@ import DialogRoom from './DialogRoom'
 const TableRoom: FC = () => {
 	const [rooms, setRooms] = useState<IAllRoom[]>([])
 	const [loading, setLoading] = useState<boolean>(true)
+	const [searchQuery, setSearchQuery] = useState<string>('')
 
 	const fetchAllRooms = async () => {
 		await apiRooms()
@@ -38,6 +39,14 @@ const TableRoom: FC = () => {
 		fetchAllRooms()
 	}, [])
 
+	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchQuery(event.target.value)
+	}
+
+	const filteredRooms = rooms.filter(room =>
+		room.name.toLowerCase().includes(searchQuery.toLowerCase())
+	)
+
 	return (
 		<Card className='rounded-md border-none'>
 			<CardHeader>
@@ -47,8 +56,10 @@ const TableRoom: FC = () => {
 						<Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
 						<Input
 							type='search'
-							placeholder='Search...'
+							placeholder='Search based name...'
 							className='w-full rounded-lg bg-background pl-8'
+							value={searchQuery}
+							onChange={handleSearchChange}
 						/>
 					</div>
 					<DialogCreateRoom />
@@ -57,8 +68,8 @@ const TableRoom: FC = () => {
 			<CardContent>
 				{loading ? (
 					<p>Loading...</p>
-				) : rooms.length <= 0 ? (
-					<p>There is no reservation data!</p>
+				) : filteredRooms.length === 0 ? (
+					<p>No rooms found matching the search criteria.</p>
 				) : (
 					<Table>
 						<TableHeader className='text-base font-semibold text-muted-foreground'>
@@ -77,7 +88,7 @@ const TableRoom: FC = () => {
 							</TableRow>
 						</TableHeader>
 						<TableBody className='text-base'>
-							{rooms.map(room => (
+							{filteredRooms.map(room => (
 								<TableRow key={room.id}>
 									<TableCell>
 										{!room.image_urls[0] ? (

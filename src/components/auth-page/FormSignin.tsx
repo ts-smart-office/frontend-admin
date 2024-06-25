@@ -36,8 +36,8 @@ const FormSignin: FC = () => {
 		})
 		await apiLoginAdmin(values)
 			.then(res => {
-				const { id, name, email } = res.data.user
-				handleAdminSession({ id, name, email })
+				const { id, name, email, role } = res.data.user
+				handleAdminSession({ id, name, email, role })
 				toast({
 					description: res.data.message,
 				})

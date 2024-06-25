@@ -1,7 +1,6 @@
 'use client'
-import { FC, useEffect, useState } from 'react'
+import { FC } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
-import { apiReviewReservation } from '@/api/reservationApi'
 import {
 	Table,
 	TableBody,
@@ -12,37 +11,19 @@ import {
 } from '../ui/table'
 import { StarIcon } from '@heroicons/react/24/solid'
 
-const FeedbackCard: FC = () => {
-	const [feedbacks, setFeedbacks] = useState<any[]>([])
-	const [loading, setLoading] = useState<boolean>(true)
+type TFeedbackCardProps = {
+	feedbacks: any[]
+}
 
-	const fetchAllReviews = async () => {
-		await apiReviewReservation()
-			.then(res => {
-				setFeedbacks(res.data.data)
-				setLoading(false)
-			})
-			.catch(error => {
-				if (error.response) {
-					console.log(error.response)
-				}
-			})
-	}
-
-	useEffect(() => {
-		fetchAllReviews()
-	}, [])
-
+const FeedbackCard: FC<TFeedbackCardProps> = ({ feedbacks }) => {
 	return (
 		<Card className='h-full rounded-md border-none'>
 			<CardHeader>
-				<CardTitle>Customer feedbacks</CardTitle>
+				<CardTitle>Customer reviews</CardTitle>
 			</CardHeader>
 			<CardContent>
-				{loading ? (
-					<p>Loading...</p>
-				) : feedbacks.length <= 0 ? (
-					<p>There is no feedback data!</p>
+				{feedbacks.length <= 0 ? (
+					<p>There is no reviews data!</p>
 				) : (
 					<Table>
 						<TableHeader>

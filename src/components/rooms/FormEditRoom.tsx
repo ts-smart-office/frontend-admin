@@ -97,6 +97,14 @@ const FormEditRoom: FC<TFormEditRoomProps> = ({ details }) => {
 				: data.facilities.find(f => f.id === id)?.name,
 		}))
 
+		data.facilities.forEach(facility => {
+			if (!initialFacilityIds.includes(facility.id)) {
+				newFacilities.push({
+					name: facility.name,
+				})
+			}
+		})
+
 		const bodyEditRoom = {
 			description: data.description,
 			max_capacity: data.max_capacity,

@@ -2,8 +2,8 @@
 import { cookies } from 'next/headers'
 
 export async function handleAdminSession(admin: any) {
-	const { id, name, email } = admin
-	const sessionAdmin = { id, name, email }
+	const { id, name, email, role } = admin
+	const sessionAdmin = { id, name, email, role }
 
 	cookies().set('session_admin', JSON.stringify(sessionAdmin), {
 		httpOnly: true,

@@ -9,10 +9,10 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { useToast } from '../ui/use-toast'
 import { apiLogout } from '@/api/authApi'
 import { deleteAdminSession } from '@/lib/actions'
+import { useRouter } from 'next/navigation'
 
 type TDropdownAdminProps = {
 	sessionAdmin: {
@@ -24,12 +24,14 @@ type TDropdownAdminProps = {
 
 const DropdownAdmin: FC<TDropdownAdminProps> = ({ sessionAdmin }) => {
 	const { toast } = useToast()
+	const router = useRouter()
 	const adminLogout = async () => {
 		const res = await apiLogout()
 		if (res) {
 			toast({
 				description: 'Logout success',
 			})
+			router.push('/signin')
 		}
 		await deleteAdminSession()
 	}

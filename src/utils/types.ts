@@ -140,3 +140,50 @@ export interface ICreateRoom {
 	facilities: IFacility[]
 	prices: IReservationOption[]
 }
+
+export interface IDashboardOverview {
+	total_incoming_reservations: number
+	total_approved_reservations: number
+	total_completed_reservations: number
+	total_reservations: number
+	total_users_all_time: number
+	total_new_users: number
+	upcoming_reservations: {
+		id: string
+		type_name: string
+		date: string
+		start_time: string
+		end_time: string
+		price: number
+		pricing_unit: string
+		total_persons: number
+		room_discount: number
+		food_discount: number
+		optional_message: string | null
+		status: string
+		status_message: string | null
+		proof_of_payment_url: string | null
+		user: {
+			id: string
+			name: string
+			email: string
+			phone: string
+			company: string
+		}
+		room: { id: number; name: string }
+		created_at: string
+		updated_at: string
+		expires_at: string
+	}[]
+	reviews: any[]
+	posts: any[]
+	total_posts: number
+	dates_with_reservations_all_time: string[]
+}
+
+export interface IReviewReservationParams {
+	rating?: string
+	minDate?: string
+	maxDate?: string
+	sortBy?: string
+}

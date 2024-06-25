@@ -1,7 +1,6 @@
 'use client'
-import { FC, useEffect, useState } from 'react'
+import { FC } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
-import { apiReservations } from '@/api/reservationApi'
 import {
 	Table,
 	TableBody,
@@ -22,37 +21,22 @@ import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { Badge } from '../ui/badge'
 
-const ReservationCard: FC = () => {
-	const [reservations, setReservations] = useState<any[]>([])
-	const [loading, setLoading] = useState<boolean>(true)
+type TReservationCardProps = {
+	upcomingReservation: any[]
+}
 
-	const getIncomingReservations = async () => {
-		await apiReservations('incoming')
-			.then(res => {
-				console.log(res.data.data)
-				setReservations(res.data.data)
-				setLoading(false)
-			})
-			.catch(error => {
-				if (error.response) {
-					console.log(error.response)
-				}
-			})
-	}
-
-	useEffect(() => {
-		getIncomingReservations()
-	}, [])
+const ReservationCard: FC<TReservationCardProps> = ({
+	upcomingReservation,
+}) => {
+	console.log(upcomingReservation)
 
 	return (
 		<Card className='rounded-md border-none'>
 			<CardHeader>
-				<CardTitle>Incoming Reservations</CardTitle>
+				<CardTitle>Upcoming Reservations</CardTitle>
 			</CardHeader>
 			<CardContent>
-				{loading ? (
-					<p>Loading...</p>
-				) : reservations.length <= 0 ? (
+				{upcomingReservation.length <= 0 ? (
 					<p>There is no incoming reservation</p>
 				) : (
 					<Table>
@@ -79,7 +63,7 @@ const ReservationCard: FC = () => {
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{reservations.map(item => (
+							{upcomingReservation.map(item => (
 								<TableRow key={item.id}>
 									<TableCell className='text-base text-darkColor'>
 										{item.user.name}
