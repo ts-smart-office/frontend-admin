@@ -148,7 +148,7 @@ const TableReservations: FC = () => {
 				{loading ? (
 					<p>Loading...</p>
 				) : filteredReservations.length === 0 ? (
-					<p>No reservations found matching the search criteria.</p>
+					<p>No reservations found.</p>
 				) : (
 					<Table>
 						<TableHeader>
