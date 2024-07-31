@@ -9,12 +9,12 @@ type TSidebarMenuProps = {
 
 const SidebarMenu: FC<TSidebarMenuProps> = ({ text, link, icon }) => {
 	return (
-		<div className='flex items-center gap-2 bg-transparent text-darkColor hover:bg-greenBrand hover:text-white transition-colors duration-300 rounded-md py-3 px-4'>
-			{icon}
-			<Link href={link} className='text-base font-semibold tracking-wider'>
+		<Link href={link} className='text-base font-semibold tracking-wider'>
+			<div className='flex items-center gap-2 bg-transparent text-darkColor hover:bg-greenBrand hover:text-white transition-colors duration-300 rounded-md py-3 px-4'>
+				{icon}
 				{text}
-			</Link>
-		</div>
+			</div>
+		</Link>
 	)
 }
 

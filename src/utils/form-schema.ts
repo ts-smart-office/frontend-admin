@@ -1,5 +1,21 @@
 import { z } from 'zod'
 
+export const createAdminSchema = z.object({
+	name: z.string({ required_error: 'Please enter admin name' }),
+	role_id: z.string({ required_error: 'Please select admin role' }),
+	email: z
+		.string({ required_error: 'Please enter admin name' })
+		.email({ message: 'Email not valid' }),
+	phone: z
+		.string()
+		.min(12, { message: 'Phone number must be at least 12 numbers' })
+		.optional(),
+	company: z.string(),
+	password: z
+		.string()
+		.min(8, { message: 'Password must be at least 8 charters' }),
+})
+
 export const signinSchema = z.object({
 	email: z.string().email(),
 	password: z

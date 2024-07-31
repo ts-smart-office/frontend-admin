@@ -2,7 +2,15 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { getAdminSession } from './lib/actions'
 
-const protectedRoutes = ['/', '/reservations', '/foods']
+const protectedRoutes = [
+	'/',
+	'/reservations',
+	'/foods',
+	'/posts',
+	'/reviews',
+	'/rooms',
+	'/users',
+]
 
 export default async function middleware(req: NextRequest) {
 	const sessionAdmin = await getAdminSession()

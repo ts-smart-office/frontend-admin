@@ -1,5 +1,4 @@
-import FormCreatePost from '@/components/posts/FormCreatePost'
-import TablePost from '@/components/posts/TablePost'
+import { FC } from 'react'
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -8,9 +7,9 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import { FC } from 'react'
+import FormEditPost from '@/components/posts/FormEditPost'
 
-const PostPage: FC = () => {
+const page = ({ params }: { params: { id: string } }) => {
 	return (
 		<div className='px-4 font-urbanist flex flex-col gap-6'>
 			<Breadcrumb>
@@ -20,13 +19,17 @@ const PostPage: FC = () => {
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem>
-						<BreadcrumbPage>Posts</BreadcrumbPage>
+						<BreadcrumbLink href='/posts'>Posts</BreadcrumbLink>
+					</BreadcrumbItem>
+					<BreadcrumbSeparator />
+					<BreadcrumbItem>
+						<BreadcrumbPage>Edit post</BreadcrumbPage>
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<TablePost />
+			<FormEditPost idPost={params.id} />
 		</div>
 	)
 }
 
-export default PostPage
+export default page

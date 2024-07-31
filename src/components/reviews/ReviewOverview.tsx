@@ -57,13 +57,13 @@ const ReviewOverview: FC<TReviewOverviewProps> = ({
 }) => {
 	return (
 		<Card className='w-full h-full bg-white rounded-md border-none'>
-			<CardHeader className='flex flex-row justify-between'>
+			<CardHeader className='flex flex-row justify-between items-center'>
 				<CardTitle>Overview Review</CardTitle>
 				<DatePickerWithRange setMinDate={setMinDate} setMaxDate={setMaxDate} />
 			</CardHeader>
-			<CardContent className='w-full grid grid-cols-10 mt-4'>
-				<div className='col-span-4 flex flex-col gap-4'>
-					<div className='w-fit flex flex-col gap-1'>
+			<CardContent className='w-full grid grid-cols-10'>
+				<div className='col-span-3 flex flex-col gap-4'>
+					<div className='w-full flex justify-between gap-1'>
 						<div className='flex items-center justify-between gap-2'>
 							<ArrowTrendingUpIcon className='w-6 h-6' />
 							<h2 className='text-lg font-semibold'>Average Rating</h2>
@@ -72,7 +72,7 @@ const ReviewOverview: FC<TReviewOverviewProps> = ({
 							{averageRating}
 						</p>
 					</div>
-					<div className='w-fit flex flex-col gap-1'>
+					<div className='w-full justify-between flex gap-1'>
 						<div className='flex items-center justify-between gap-2'>
 							<ChatBubbleLeftIcon className='w-6 h-6' />
 							<h2 className='text-lg font-semibold'>Total reviews</h2>
@@ -81,7 +81,7 @@ const ReviewOverview: FC<TReviewOverviewProps> = ({
 							{totalReview}
 						</p>
 					</div>
-					<div className='w-fit flex flex-col gap-1'>
+					<div className='w-full flex justify-between gap-1'>
 						<div className='flex items-center justify-between gap-2'>
 							<ChatBubbleLeftEllipsisIcon className='w-6 h-6' />
 							<h2 className='text-lg font-semibold'>
@@ -93,7 +93,7 @@ const ReviewOverview: FC<TReviewOverviewProps> = ({
 						</p>
 					</div>
 				</div>
-				<div className='col-span-5 flex justify-between'>
+				<div className='col-start-5 col-span-5 flex justify-between'>
 					<div className='w-fit flex flex-col gap-2'>
 						<h2 className='text-lg font-semibold'>5 star reviews</h2>
 						{!goodReviews || goodReviews.length <= 0 ? (

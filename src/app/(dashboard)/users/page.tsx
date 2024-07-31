@@ -1,5 +1,4 @@
-import FormCreatePost from '@/components/posts/FormCreatePost'
-import TablePost from '@/components/posts/TablePost'
+import { FC } from 'react'
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -8,9 +7,10 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import { FC } from 'react'
+import TableUsers from '@/components/users/TableUsers'
+import TableAdmins from '@/components/users/TableAdmins'
 
-const PostPage: FC = () => {
+const UsersPage: FC = () => {
 	return (
 		<div className='px-4 font-urbanist flex flex-col gap-6'>
 			<Breadcrumb>
@@ -20,13 +20,14 @@ const PostPage: FC = () => {
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem>
-						<BreadcrumbPage>Posts</BreadcrumbPage>
+						<BreadcrumbPage>Users</BreadcrumbPage>
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<TablePost />
+			<TableUsers />
+			<TableAdmins />
 		</div>
 	)
 }
 
-export default PostPage
+export default UsersPage
