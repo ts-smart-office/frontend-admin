@@ -105,18 +105,45 @@ const FormEditRoom: FC<TFormEditRoomProps> = ({ details }) => {
 			}
 		})
 
+		const initialReservationOptionIds =
+			details?.reservation_options.map((item: any) => item.id) || []
+		const updatedReservationOptionIds = data.prices.map(item => item.id)
+
+		const deletedReservationOptionIds = initialReservationOptionIds.filter(
+			(id: any) => !updatedReservationOptionIds.includes(id)
+		)
+
+		const newReservationOptions = initialReservationOptionIds.map((id: any) => {
+			const option = data.prices.find(p => p.id === id)
+			return {
+				id: id,
+				reservation_type_id: deletedReservationOptionIds.includes(id)
+					? null
+					: option?.reservation_type.id,
+				price: deletedReservationOptionIds.includes(id) ? null : option?.price,
+				pricing_unit: deletedReservationOptionIds.includes(id)
+					? null
+					: option?.pricing_unit,
+			}
+		})
+
+		data.prices.forEach(option => {
+			if (!initialReservationOptionIds.includes(option.id)) {
+				newReservationOptions.push({
+					reservation_type_id: option.reservation_type.id,
+					price: option.price,
+					pricing_unit: option.pricing_unit,
+				})
+			}
+		})
+
 		const bodyEditRoom = {
 			description: data.description,
 			max_capacity: data.max_capacity,
 			name: data.name,
 			reservation_lead_time: data.reservation_lead_time,
 			facilities: newFacilities,
-			reservation_options: data.prices.map((item: any) => ({
-				id: item.id,
-				reservation_type_id: item.reservation_type.id,
-				price: item.price,
-				pricing_unit: item.pricing_unit,
-			})),
+			reservation_options: newReservationOptions,
 			_method: 'put',
 		}
 

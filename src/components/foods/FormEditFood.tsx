@@ -49,13 +49,38 @@ const FormEditFood: FC<TFormEditFood> = ({ details }) => {
 	})
 
 	async function onSubmit(data: z.infer<typeof addFoodSchema>) {
+		const initialItemIds = details?.items.map((item: any) => item.id) || []
+		const updatedItemIds = data.items.map(item => item.id)
+
+		const deletedItemIds = initialItemIds.filter(
+			id => !updatedItemIds.includes(id)
+		)
+
+		const newItems = initialItemIds.map(id => ({
+			id: id,
+			name: deletedItemIds.includes(id)
+				? null
+				: data.items.find(item => item.id === id)?.name,
+		}))
+
+		data.items.forEach(item => {
+			if (!initialItemIds.includes(item.id)) {
+				newItems.push({
+					id: item.id,
+					name: item.name,
+				})
+			}
+		})
+
 		const bodyEditFood = {
 			name: data.name,
 			category: data.category,
 			price: parseInt(data.price),
-			items: data.items.map(item => ({ name: item.name, id: item.id })),
+			items: newItems,
 			_method: 'put',
 		}
+
+		console.log(bodyEditFood)
 
 		await apiEditFood(bodyEditFood, details?.id!)
 			.then(res => {

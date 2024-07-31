@@ -105,8 +105,14 @@ const TableReservations: FC = () => {
 		setSearchQuery(event.target.value)
 	}
 
-	const filteredReservations = reservations.filter(reservation =>
-		reservation.user.name.toLowerCase().includes(searchQuery.toLowerCase())
+	// const filteredReservations = reservations.filter(reservation =>
+	// 	reservation.user.name.toLowerCase().includes(searchQuery.toLowerCase())
+	// )
+	const filteredReservations = reservations.filter(
+		reservation =>
+			reservation.user &&
+			reservation.user.name &&
+			reservation.user.name.toLowerCase().includes(searchQuery.toLowerCase())
 	)
 
 	return (

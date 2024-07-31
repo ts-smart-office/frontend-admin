@@ -33,7 +33,7 @@ export default function CustomUpload({
 		if (urlImage) {
 			setPreviewImg(urlImage)
 		}
-	}, [])
+	}, [urlImage])
 
 	return (
 		<div className='inline-flex items-center gap-8'>
