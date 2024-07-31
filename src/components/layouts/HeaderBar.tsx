@@ -1,22 +1,18 @@
-'use client'
-import { BellAlertIcon, UserCircleIcon } from '@heroicons/react/24/outline'
-import { usePathname } from 'next/navigation'
+import { BellAlertIcon } from '@heroicons/react/24/outline'
 import { FC } from 'react'
+import HeaderTitle from './HeaderTitle'
+import DropdownAdmin from './DropdownAdmin'
+import { getAdminSession } from '@/lib/actions'
 
-const HeaderBar: FC = () => {
-	const pathname = usePathname()
-	const headerTitleFunc = (str: string) => {
-		var modifiedString = str.replace('/', '')
-		return modifiedString.charAt(0).toUpperCase() + modifiedString.slice(1)
-	}
-	const headerTitle = headerTitleFunc(pathname)
+const HeaderBar: FC = async () => {
+	const sessionAdmin = await getAdminSession()
 
 	return (
 		<div className='bg-white h-20 flex items-center justify-between px-4 font-urbanist'>
-			<p className='font-semibold text-3xl'>{headerTitle}</p>
+			<HeaderTitle />
 			<div className='flex items-center gap-4'>
 				<BellAlertIcon className='w-6 h-6' />
-				<UserCircleIcon className='w-12 h-12' />
+				{sessionAdmin && <DropdownAdmin sessionAdmin={sessionAdmin} />}
 			</div>
 		</div>
 	)

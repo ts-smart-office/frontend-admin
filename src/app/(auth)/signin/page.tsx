@@ -8,7 +8,7 @@ const page: FC = () => {
 			<div className='w-full grid grid-cols-4 md:grid-cols-12 gap-6'>
 				<div className='hidden md:col-span-7 md:flex h-full flex-col justify-between bg-blue-50 p-8 rounded-lg'>
 					<h1 className='md:text-4xl lg:text-6xl font-semibold'>
-						Let’s collaborate with <br /> our workspace!
+						Smart Office Admin
 					</h1>
 					<div className='relative w-full h-96'>
 						<Image

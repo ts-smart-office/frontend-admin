@@ -3,6 +3,7 @@ import '../globals.css'
 import { fontQuestrial, fontUrbanist } from '@/utils/font'
 import Sidebar from '@/components/layouts/Sidebar'
 import HeaderBar from '@/components/layouts/HeaderBar'
+import { Toaster } from '@/components/ui/toaster'
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -23,6 +24,7 @@ export default function RootLayout({
 				<main className='pl-60 w-full h-full flex flex-col gap-4'>
 					<HeaderBar />
 					{children}
+					<Toaster />
 				</main>
 			</body>
 		</html>

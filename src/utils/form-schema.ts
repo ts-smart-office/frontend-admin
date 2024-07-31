@@ -1,57 +1,93 @@
 import { z } from 'zod'
 
+export const createAdminSchema = z.object({
+	name: z.string({ required_error: 'Please enter admin name' }),
+	role_id: z.string({ required_error: 'Please select admin role' }),
+	email: z
+		.string({ required_error: 'Please enter admin name' })
+		.email({ message: 'Email not valid' }),
+	phone: z
+		.string()
+		.min(12, { message: 'Phone number must be at least 12 numbers' })
+		.optional(),
+	company: z.string(),
+	password: z
+		.string()
+		.min(8, { message: 'Password must be at least 8 charters' }),
+})
+
 export const signinSchema = z.object({
 	email: z.string().email(),
-	password: z.string().min(8),
+	password: z
+		.string()
+		.min(8, { message: 'Password must be at least 8 charters' }),
 })
 
-export const signupSchema = z.object({
-	fullname: z.string().min(4).max(50),
-	company: z.string().min(4).max(50),
-	email: z.string().email(),
-	phone: z.string().min(12),
-	password: z.string().min(8),
+export const STATUS = [
+	'waitingForPayment',
+	'paid',
+	'approved',
+	'expired',
+	'canceledByUser',
+	'declined',
+	'completed',
+] as const
+
+export const updateReservationSchema = z.object({
+	status: z.enum(STATUS),
 })
 
-export const subscriptionSchema = z.object({
-	email: z.string().email(),
-})
-
-export const uploadPaymentFile = z.object({
-	paymentFile: z.custom<File | null>(val => val instanceof File, 'Required'),
-})
-
-const additionalFoodSchema = z.object({
-	id: z.string(),
-	additional_food_id: z.string(),
-	reservation_id: z.string(),
-	price: z.number().positive(),
-})
-
-export const reservationSchema = z.object({
-	id: z.string(),
-	user_id: z.string(),
-	room_id: z.string(),
-	date: z.date(),
-	type: z.enum(['halfday', 'fullday', 'podcastStreaming', 'podcastRecording']),
-	room_price: z.number().positive(),
-	total_persons: z.preprocess(
-		a => parseInt(z.string().parse(a), 10),
-		z.number()
+export const addFoodSchema = z.object({
+	name: z.string({ required_error: 'Please enter food name' }),
+	category: z.enum(['snack', 'lunch']),
+	price: z.string().refine(val => !Number.isNaN(parseInt(val, 10))),
+	items: z.array(
+		z.object({
+			id: z.number().optional(),
+			name: z.string({ required_error: 'Please add item of food' }),
+		}),
+		{ required_error: 'Please add item of food' }
 	),
-	total_price: z.number().positive(),
-	optional_message: z.string(),
-	status: z
-		.enum([
-			'waitingForPayment',
-			'paid',
-			'approved',
-			'expired',
-			'canceledByUser',
-			'declined',
-		])
-		.default('waitingForPayment'),
-	status_message: z.string().optional(),
-	review_id: z.string().optional(),
-	additional_foods: z.array(additionalFoodSchema).optional(),
+})
+
+const priceType = z.enum([
+	'fullday',
+	'halfday',
+	'podcastStreaming',
+	'podcastRecording',
+])
+
+export const addRoomSchema = z.object({
+	name: z.string(),
+	max_capacity: z.string().refine(val => !Number.isNaN(parseInt(val, 10))),
+	description: z.string(),
+	reservation_lead_time: z
+		.string()
+		.refine(val => !Number.isNaN(parseInt(val, 10))),
+	facilities: z.array(
+		z.object({
+			id: z.number().optional(),
+			name: z.string({ required_error: 'Please add facilities of room' }),
+		}),
+		{ required_error: 'Please add facilities of food' }
+	),
+	prices: z.array(
+		z.object({
+			id: z.number().optional(),
+			reservation_type: z.object({
+				id: z.number().optional(),
+				name: z.string(),
+				start_time: z.string().optional(),
+				end_time: z.string().optional(),
+			}),
+			price: z
+				.number()
+				.min(4, { message: 'Price must be minimum 4 characters' }),
+			pricing_unit: z.string(),
+		})
+	),
+})
+
+export const uploadImagesRoom = z.object({
+	attachment: z.any(),
 })

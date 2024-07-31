@@ -1,14 +1,19 @@
 import { FC } from 'react'
 import SidebarMenu from './SidebarMenu'
 import {
+	ArrowTrendingUpIcon,
 	BuildingOfficeIcon,
+	CakeIcon,
 	ClipboardDocumentIcon,
 	NewspaperIcon,
 	RectangleGroupIcon,
 	UserGroupIcon,
 } from '@heroicons/react/24/outline'
+import { getAdminSession } from '@/lib/actions'
 
-const Sidebar: FC = () => {
+const Sidebar: FC = async () => {
+	const sessionAdmin = await getAdminSession()
+
 	const menuItems = [
 		{
 			text: 'Dashboard',
@@ -26,16 +31,22 @@ const Sidebar: FC = () => {
 			icon: <BuildingOfficeIcon className='w-6 h-6' />,
 		},
 		{
+			text: 'Foods',
+			link: '/foods',
+			icon: <CakeIcon className='w-6 h-6' />,
+		},
+		{
+			text: 'Review',
+			link: '/reviews',
+			icon: <ArrowTrendingUpIcon className='w-6 h-6' />,
+		},
+		{
 			text: 'Posts',
 			link: '/posts',
 			icon: <NewspaperIcon className='w-6 h-6' />,
 		},
-		{
-			text: 'Users',
-			link: '/users',
-			icon: <UserGroupIcon className='w-6 h-6' />,
-		},
 	]
+
 	return (
 		<div className='fixed flex flex-col gap-3 w-60 min-h-screen bg-white px-8 font-urbanist'>
 			<div className='py-7'>
@@ -50,6 +61,13 @@ const Sidebar: FC = () => {
 						icon={item.icon}
 					/>
 				))}
+				{sessionAdmin.role.name === 'Super Admin' && (
+					<SidebarMenu
+						text='Users'
+						link='/users'
+						icon={<UserGroupIcon className='w-6 h-6' />}
+					/>
+				)}
 			</div>
 		</div>
 	)
