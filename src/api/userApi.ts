@@ -36,3 +36,21 @@ export const apiUpdateUserRole = (id: string, data: any) => {
 		},
 	})
 }
+
+export const apiGetSettings = () => {
+	return axiosInstance.get('/api/admin/settings', {
+		headers: {
+			accept: 'application/json',
+			'X-XSRF-TOKEN': getCookie('XSRF-TOKEN'),
+		},
+	})
+}
+
+export const apiUpdateSettings = (data: any) => {
+	return axiosInstance.post('/api/admin/settings', data, {
+		headers: {
+			accept: 'application/json',
+			'X-XSRF-TOKEN': getCookie('XSRF-TOKEN'),
+		},
+	})
+}

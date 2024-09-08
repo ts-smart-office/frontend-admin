@@ -5,9 +5,11 @@ import { IReviewReservationParams } from '@/utils/types'
 export const apiReservations = ({
 	status = [],
 	role,
+	export: shouldExport,
 }: {
 	status?: string[]
 	role?: string
+	export?: boolean
 }) => {
 	const params: Record<string, string | string[]> = {}
 
@@ -17,6 +19,17 @@ export const apiReservations = ({
 
 	if (role) {
 		params.role = role
+	}
+
+	if (shouldExport) {
+		params.export = shouldExport.toString()
+		return axiosInstance.get('/api/admin/reservations', {
+			headers: {
+				accept: 'application/json',
+			},
+			params: params,
+			responseType: 'blob',
+		})
 	}
 
 	return axiosInstance.get('/api/admin/reservations', {
@@ -58,6 +71,7 @@ export const apiReviews = ({
 	minDate,
 	maxDate,
 	sortBy,
+	export: shouldExport,
 }: IReviewReservationParams) => {
 	const params: IReviewReservationParams = {}
 
@@ -75,6 +89,17 @@ export const apiReviews = ({
 
 	if (sortBy) {
 		params.sortBy = sortBy
+	}
+
+	if (shouldExport) {
+		params.export = shouldExport
+		return axiosInstance.get('/api/admin/reviews', {
+			headers: {
+				accept: 'application/json',
+			},
+			params: params,
+			responseType: 'blob',
+		})
 	}
 
 	return axiosInstance.get(`/api/admin/reviews`, {

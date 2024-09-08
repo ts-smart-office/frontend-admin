@@ -20,6 +20,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '../ui/select'
+import { saveAs } from 'file-saver'
+import { Button } from '../ui/button'
 
 const TableReview: FC = () => {
 	const [reviews, setReviews] = useState<any[]>([])
@@ -41,6 +43,21 @@ const TableReview: FC = () => {
 			.then(res => {
 				setReviews(res.data.data)
 				setLoading(false)
+			})
+			.catch(error => {
+				if (error.response) {
+					console.log(error.response)
+				}
+			})
+	}
+
+	const downloadReview = async () => {
+		await apiReviews({ export: true })
+			.then(res => {
+				const blob = new Blob([res.data], {
+					type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+				})
+				saveAs(blob, 'review.xlsx')
 			})
 			.catch(error => {
 				if (error.response) {
@@ -74,6 +91,12 @@ const TableReview: FC = () => {
 							</SelectGroup>
 						</SelectContent>
 					</Select>
+					<Button
+						onClick={downloadReview}
+						className='w-fit bg-greenBrand px-8 h-10 hover:bg-opacity-80 hover:bg-greenBrand'
+					>
+						Download excel
+					</Button>
 				</div>
 			</CardHeader>
 			<CardContent>
