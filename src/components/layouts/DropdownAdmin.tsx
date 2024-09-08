@@ -13,6 +13,7 @@ import { useToast } from '../ui/use-toast'
 import { apiLogout } from '@/api/authApi'
 import { deleteAdminSession } from '@/lib/actions'
 import { useRouter } from 'next/navigation'
+import ModalSettingNumber from '../settings/ModalSettingNumber'
 
 type TDropdownAdminProps = {
 	sessionAdmin: {
@@ -49,6 +50,8 @@ const DropdownAdmin: FC<TDropdownAdminProps> = ({ sessionAdmin }) => {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end'>
 				<DropdownMenuLabel>Admin Account</DropdownMenuLabel>
+				<DropdownMenuSeparator />
+				<ModalSettingNumber />
 				<DropdownMenuSeparator />
 				<Button
 					variant='ghost'

@@ -186,4 +186,5 @@ export interface IReviewReservationParams {
 	minDate?: string
 	maxDate?: string
 	sortBy?: string
+	export?: boolean
 }
