@@ -42,6 +42,7 @@ import {
 import { CheckBadgeIcon } from '@heroicons/react/24/solid'
 import { useToast } from '../ui/use-toast'
 import SelectStatus from './SelectStatus'
+import { saveAs } from 'file-saver'
 
 const statusReservation = [
 	{ key: 'Waiting Payment', value: 'waitingForPayment' },
@@ -97,6 +98,21 @@ const TableReservations: FC = () => {
 			})
 	}
 
+	const downloadReservations = async () => {
+		await apiReservations({ export: true })
+			.then(res => {
+				const blob = new Blob([res.data], {
+					type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+				})
+				saveAs(blob, 'reservations.xlsx')
+			})
+			.catch(error => {
+				if (error.response) {
+					console.log(error.response)
+				}
+			})
+	}
+
 	useEffect(() => {
 		fetchAllReservations()
 	}, [filterRole, filterStatus])
@@ -148,6 +164,12 @@ const TableReservations: FC = () => {
 						filterStatus={filterStatus}
 						setFilterStatus={setFilterStatus}
 					/>
+					<Button
+						onClick={downloadReservations}
+						className='w-fit bg-greenBrand px-8 h-10 hover:bg-opacity-80 hover:bg-greenBrand'
+					>
+						Download excel
+					</Button>
 				</div>
 			</CardHeader>
 			<CardContent>
