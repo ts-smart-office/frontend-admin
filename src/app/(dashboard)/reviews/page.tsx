@@ -12,7 +12,7 @@ import ReviewOverview from '@/components/reviews/ReviewOverview'
 import TableReview from '@/components/reviews/TableReview'
 import { apiReviewOverview } from '@/api/reservationApi'
 
-const page: FC = () => {
+const ReviewPage: FC = () => {
 	const [reviewOverview, setReviewOverview] = useState<any | null>(null)
 	const [loading, setLoading] = useState<boolean>(true)
 	const [minDate, setMinDate] = useState<string>('')
@@ -71,4 +71,4 @@ const page: FC = () => {
 	)
 }
 
-export default page
+export default ReviewPage

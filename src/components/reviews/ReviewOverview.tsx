@@ -100,7 +100,7 @@ const ReviewOverview: FC<TReviewOverviewProps> = ({
 							<p className='font-semibold text-xl text-greyMuted'>No data!</p>
 						) : (
 							goodReviews.map(item => (
-								<div className='flex gap-2 items-end'>
+								<div key={item.name} className='flex gap-2 items-end'>
 									<p className='font-semibold text-greenBrand text-2xl'>
 										{item.total}
 									</p>
@@ -115,7 +115,7 @@ const ReviewOverview: FC<TReviewOverviewProps> = ({
 							<p className='font-semibold text-xl text-greyMuted'>No data!</p>
 						) : (
 							midReviews.map(item => (
-								<div className='flex gap-2 items-end'>
+								<div key={item.name} className='flex gap-2 items-end'>
 									<p className='font-semibold text-greenBrand text-2xl'>
 										{item.total}
 									</p>
@@ -130,7 +130,7 @@ const ReviewOverview: FC<TReviewOverviewProps> = ({
 							<p className='font-semibold text-xl text-greyMuted'>No data!</p>
 						) : (
 							lowReviews.map(item => (
-								<div className='flex gap-2 items-end'>
+								<div key={item.name} className='flex gap-2 items-end'>
 									<p className='font-semibold text-greenBrand text-2xl'>
 										{item.total}
 									</p>
